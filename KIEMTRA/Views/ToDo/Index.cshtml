@@ -1,0 +1,82 @@
+﻿@model IEnumerable<KIEMTRA.Models.TodoItem>
+
+<div class="container mt-4">
+    <h3 class="text-center mb-4 fw-semibold">QUẢN LÝ CÔNG VIỆC</h3>
+
+    <!-- Form thêm công việc -->
+    <form asp-action="Create" method="post" class="row g-2 mb-3">
+        <div class="col-md-5">
+            <input type="text" name="Title" class="form-control" placeholder="Tên công việc" required />
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="Tag" class="form-control" placeholder="Tag" />
+        </div>
+        <div class="col-md-3 d-grid">
+            <button type="submit" class="btn btn-dark">+ Thêm</button>
+        </div>
+    </form>
+
+    <!-- Form lọc theo Tag -->
+    <form asp-action="Index" method="get" class="row g-2 mb-4">
+        <div class="col-md-9">
+            <input type="text" name="tag" class="form-control" placeholder="Lọc theo Tag..." />
+        </div>
+        <div class="col-md-3 d-grid">
+            <button type="submit" class="btn btn-secondary">Lọc</button>
+        </div>
+    </form>
+
+    <!-- Bảng công việc -->
+    <table class="table table-bordered align-middle">
+        <thead class="table-light text-center">
+            <tr>
+                <th style="width: 60px;">#</th>
+                <th>Tên công việc</th>
+                <th style="width: 150px;">Tag</th>
+                <th style="width: 150px;">Trạng thái</th>
+                <th style="width: 180px;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                var i = 1;
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center">@i</td>
+                        <td>@item.Title</td>
+                        <td class="text-center">
+                            <span class="text-muted">@item.Tag</span>
+                        </td>
+                        <td class="text-center">
+                            @if (item.IsCompleted)
+                            {
+                                <span class="badge bg-success">Hoàn thành</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Chưa xong</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <form asp-action="ToggleComplete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-dark">✓</button>
+                            </form>
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                    i++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Không có công việc nào</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
